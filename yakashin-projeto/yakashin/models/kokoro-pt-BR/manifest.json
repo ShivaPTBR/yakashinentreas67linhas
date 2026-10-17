@@ -1,0 +1,40 @@
+{
+  "repository": "hexgrad/Kokoro-82M",
+  "revision": "f3ff3571791e39611d31c381e3a41a3af07b4987",
+  "license": "Apache-2.0",
+  "defaultNarrator": "pm_alex",
+  "downloadOnly": true,
+  "integratedInWebPlayer": false,
+  "voices": [
+    {
+      "file": "pf_dora.pt",
+      "language": "pt-BR",
+      "gender": "female",
+      "bytes": 523425,
+      "sha256": "07e4ff987c5d5a8c3995efd15cc4f0db7c4c15e881b198d8ab7f67ecf51f5eb7",
+      "source": "https://huggingface.co/hexgrad/Kokoro-82M/resolve/f3ff3571791e39611d31c381e3a41a3af07b4987/voices/pf_dora.pt"
+    },
+    {
+      "file": "pm_alex.pt",
+      "language": "pt-BR",
+      "gender": "male",
+      "bytes": 523425,
+      "sha256": "cf0ba8c573c2480fc54123683a35cf1e2ae130428e441eb91f9149bdb188a526",
+      "source": "https://huggingface.co/hexgrad/Kokoro-82M/resolve/f3ff3571791e39611d31c381e3a41a3af07b4987/voices/pm_alex.pt"
+    },
+    {
+      "file": "pm_santa.pt",
+      "language": "pt-BR",
+      "gender": "male",
+      "bytes": 523430,
+      "sha256": "d42103169c5c872abbafb9129133af7e942bb9d272c3cc3b95c203e7d7198c29",
+      "source": "https://huggingface.co/hexgrad/Kokoro-82M/resolve/f3ff3571791e39611d31c381e3a41a3af07b4987/voices/pm_santa.pt"
+    }
+  ],
+  "requiredForSynthesis": [
+    "Kokoro engine",
+    "Kokoro-82M model weights",
+    "Misaki phonemizer and espeak-ng pt-br support"
+  ],
+  "misakiSource": "https://github.com/hexgrad/misaki"
+}

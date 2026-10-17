@@ -1,0 +1,14 @@
+export type Mood = 'calm' | 'suspense' | 'tension' | 'climax' | 'emotional';
+export const MOODS: Record<Mood, {label: string; level: number; color: string}> = {calm:{label:'Calmo',level:1,color:'#61cab5'},suspense:{label:'Suspense',level:2,color:'#a895ed'},tension:{label:'Tensão',level:3,color:'#5298ff'},climax:{label:'Clímax',level:4,color:'#e8c885'},emotional:{label:'Emocional',level:5,color:'#f39a83'}};
+export const CAST = ['Narrador','Yakashin','Kaito','Isamu','Takumi','Hiro','Sr. Nakurama','Hirotaka'] as const;
+export type Character = typeof CAST[number];
+export type Sentence = {text:string;start:number;end:number;paragraph:number;speaker:Character};
+export type Scene = {id:string;name:string;start:number;end:number;mood:Mood;characters:string[];emotion:string;trackId?:string;style:string};
+export type Chapter = {id:number;title:string;description:string;text:string;status:'published'|'draft'|'locked';cover:string;scenes:Scene[];revision:number;analysis:'editorial'|'ai'|'manual'};
+export type Track = {id:string;title:string;duration?:string;categories:Mood[];fallbackId?:string;source:'playlist'|'manual'};
+export type VoiceConfig = Record<string,{browserVoice:string;pronunciation:string;pitch:number}>;
+export type Library = {tracks:Track[];voices:VoiceConfig};
+export type Preferences = {rate:number;voiceVolume:number;musicVolume:number;voiceURI:string;multiVoice:boolean;follow:boolean;dynamicMusic:boolean;animations:boolean;fontSize:number;theme:'dark'|'paper';engine:'browser';pauseMusic:'pause'|'duck';uiSounds:boolean;automatic:boolean};
+export type ReadingProgress = {chapterId:number;revision:number;index:number;char:number;audioTime:number;completed:boolean;updatedAt:number;settings:Preferences};
+export const DEFAULT_PREFERENCES:Preferences = {rate:1,voiceVolume:0.9,musicVolume:0.25,voiceURI:'',multiVoice:false,follow:true,dynamicMusic:true,animations:true,fontSize:21,theme:'dark',engine:'browser',pauseMusic:'duck',uiSounds:false,automatic:true};
+export const PLAYLIST_ID = 'PLl-vhnGPY7cp1AOHNXwHAuLxJ9e-66fO1';

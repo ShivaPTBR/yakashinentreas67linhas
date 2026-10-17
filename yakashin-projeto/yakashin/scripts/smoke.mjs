@@ -1,0 +1,19 @@
+import assert from 'node:assert/strict';
+import { ORIGINAL_CHAPTER_3, DEFAULT_PREFERENCES } from '../.sites-runtime/tests/bundle.mjs';
+const base='http://127.0.0.1:5173';
+async function request(action,body,cookie){const r=await fetch(`${base}/api/experience?action=${action}`,{method:body===undefined?'GET':'POST',headers:{...(cookie?{Cookie:cookie}:{}),...(body===undefined?{}:{'Content-Type':'application/json',Origin:base})},...(body===undefined?{}:{body:JSON.stringify(body)})});return {status:r.status,data:await r.json()};}
+let passed=0;function pass(name){passed++;console.log(`PASS ${name}`);}
+const source=await request('chapter&id=3');assert.equal(source.status,200);assert.equal(source.data.text,ORIGINAL_CHAPTER_3);pass('API returns the complete original chapter');
+for(const id of [1,2,4,5]){assert.equal((await request(`chapter&id=${id}`)).status,404);assert.equal((await fetch(`${base}/ler/${id}`)).status,404);}pass('locked chapters reject direct URLs and API reads');
+assert.equal((await request('chapters')).status,403);assert.equal((await request('saveLibrary',{})).status,403);pass('anonymous admin reads and writes are rejected');
+const login=await fetch(`${base}/signin-with-chatgpt?return_to=/admin`,{redirect:'manual'});const cookie=login.headers.getSetCookie().map(c=>c.split(';')[0]).join('; ');assert.ok(cookie,'Local sign-in must return a cookie');
+const status=await request('status',undefined,cookie);assert.equal(status.data.admin,true);assert.equal(status.data.storage,true);pass('local authenticated administrator and database available');
+const fixture={id:998,title:'Fixture local de teste',description:'Não publicada',text:'Texto integral da fixture. Outra frase preservada.',status:'draft',cover:'',scenes:[{id:'fixture',name:'Cena de teste',start:0,end:49,mood:'calm',characters:[],emotion:'neutro',style:'Natural'}],revision:1,analysis:'manual'};fixture.scenes[0].end=fixture.text.length;
+const list=await request('chapters',undefined,cookie);const old=list.data.find(c=>c.id===998);if(old)fixture.revision=old.revision;
+const saved=await request('saveChapter',fixture,cookie);assert.equal(saved.status,200);assert.equal(saved.data.text,fixture.text);const stored=await request('chapters',undefined,cookie);assert.equal(stored.data.find(c=>c.id===998).text,fixture.text);pass('draft text persists in D1');
+assert.equal((await request('chapter&id=998',undefined,cookie)).status,404);assert.equal((await request('saveChapter',{...saved.data,status:'published'},cookie)).status,400);pass('future drafts cannot be read or published');
+const savedAgain=await request('saveChapter',saved.data,cookie);assert.equal(savedAgain.status,200);assert.equal((await request('saveChapter',saved.data,cookie)).status,409);const history=await request('revisions&id=998',undefined,cookie);assert.ok(history.data.length>=1);pass('revisions persist and stale saves are rejected');
+const progress={chapterId:3,revision:1,index:5,char:3,audioTime:.5,completed:false,updatedAt:Date.now(),settings:{...DEFAULT_PREFERENCES,voiceURI:'test-voice'}};assert.equal((await request('progress',progress,cookie)).status,200);assert.equal((await request('progress',undefined,cookie)).data.char,3);assert.equal((await request('progress')).data,null);pass('progress sync preserves position and isolates anonymous readers');
+assert.equal((await request('analyze',{text:ORIGINAL_CHAPTER_3},cookie)).status,503);assert.equal((await request('playlist',{},cookie)).status,503);pass('unconfigured services clearly return setup errors');
+const cross=await fetch(`${base}/api/experience?action=saveLibrary`,{method:'POST',headers:{Origin:'https://other.example','Content-Type':'application/json',Cookie:cookie},body:'{}'});assert.equal(cross.status,403);pass('cross-origin writes are rejected');
+console.log(`${passed} integration checks passed. All fixtures are local-only.`);

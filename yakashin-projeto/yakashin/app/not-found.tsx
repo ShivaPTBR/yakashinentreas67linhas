@@ -1,0 +1,2 @@
+import { LockKeyhole,ArrowLeft } from 'lucide-react';
+export default function NotFound(){return <main className="error-page"><LockKeyhole size={42}/><span className="eyebrow gold">FORA DAS QUATRO LINHAS</span><h1>Este capítulo ainda<br/>não entrou em campo.</h1><p>Somente o Capítulo 3 está disponível nesta edição.</p><a href="/#capitulos" className="button primary"><ArrowLeft size={18}/> Voltar aos capítulos</a></main>;}
